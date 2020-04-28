@@ -22,11 +22,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def homepage():
-<<<<<<< HEAD
     """List all available api routes."""
-=======
-    """List all available api routes. """
->>>>>>> 484f926254c4977d29cf871196f3a48a052dbe86
     return (
         f"Available Routes:<br/>"
         f"/api/v1.0/precipitation<br/<"
@@ -48,7 +44,6 @@ def measurement():
     # Create a dictionary using date as the key and prcp as the value
     climate_dict = dict(climate_data)
     climate_analysis = pd.DataFrame({'Precipitation': climate_dict})
-<<<<<<< HEAD
     climate_analysis_df = climate_analysis.to_json()
     
     return jsonify(climate_analysis_df)
@@ -77,24 +72,21 @@ def temp_obs():
 
 @app.route('/api/v1.0/start_date')
 def start():
+    session = Session(engine)
     start_d = session.query(Measurement.station,Measurement.date,func.min(Measurement.tobs),func.max(Measurement.tobs),func.avg(Measurement.tobs)).\
         filter(Measurement.station == 'USC00519281').\
         filter(Measurement.date >= '2017-01-22')
     
-    start_date = start_d.to_dict()
+ 
+
+    new = []
+    for i in start_d:
+        new.append({
+            "station":i[0], "date":i[1], "min temp": i[2], "max temp":i[3], "avg":i[4]
+        })
     
-    return jsonify(start_date)
+
+    return jsonify(new)
    
-=======
-
-    return jsonify(climate_analysis)
-
-# @app.route("/api/v1.0/stations")
-# def Stations():
-#     session = Session(engine)
-# #quReturn a JSON list of stations from the dataset.
-
-
->>>>>>> 484f926254c4977d29cf871196f3a48a052dbe86
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=5000)
